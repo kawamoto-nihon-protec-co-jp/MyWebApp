@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
+
+	<display-name>Service</display-name>
+	
+	<listener>
+          <listener-class>org.zxc.service.listener.GuiceModuleListener</listener-class>
+	</listener>
+
+	<filter>
+          <filter-name>guice-filter</filter-name>
+          <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+          <async-supported>true</async-supported>
+	</filter>
+	<filter-mapping>
+          <filter-name>guice-filter</filter-name>
+          <url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- develop mode begin -->
+	
+	<filter>
+		<filter-name>sitemesh</filter-name>
+		<filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
+		<async-supported>true</async-supported>
+	</filter>
+	<filter-mapping>
+		<filter-name>sitemesh</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>cometd</servlet-name>
+		<servlet-class>org.cometd.annotation.AnnotationCometdServlet</servlet-class>
+		<async-supported>true</async-supported>
+	</servlet>
+	<!-- develop mode end -->
+
+	<servlet>
+		<servlet-name>rest</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>javax.ws.rs.Application</param-name>
+			<param-value>org.zxc.service.application.ServiceApplication</param-value>
+		</init-param>
+		<!-- <init-param> -->
+		<!-- 	<param-name>jersey.config.server.provider.packages</param-name> -->
+		<!-- 	<param-value>org.zxc.service.resource;org.codehaus.jackson.jaxrs</param-value> -->
+		<!-- </init-param> -->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>ServletConfigurator</servlet-name>
+		<servlet-class>org.logicalcobwebs.proxool.configuration.ServletConfigurator</servlet-class>
+		<init-param>
+			<param-name>propertyFile</param-name>
+			<param-value>WEB-INF/database.properties</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>rest</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>cometd</servlet-name>
+		<url-pattern>/cometd/*</url-pattern>
+	</servlet-mapping>
+	
+</web-app>
